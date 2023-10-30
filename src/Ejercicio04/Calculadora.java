@@ -10,6 +10,7 @@ import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
 import java.awt.Font;
@@ -23,7 +24,7 @@ public class Calculadora extends JFrame {
 	private JPanel contentPane;
     
     private JLabel lblResultado;
-    JButton[] operadores = new JButton[8];
+    JButton[] operadores = new JButton[7];
     JButton[] numeros = new JButton[10];
     private double resultado = 0.0;
     private String operadorActual = "";
@@ -158,8 +159,7 @@ public class Calculadora extends JFrame {
         operadores[3] = btnMenos;
         operadores[4] = btnDel;
         operadores[5] = btnPosNeg;
-        operadores[6] = btnComa;
-        operadores[7] = btnResult;
+        operadores[6] = btnResult;
         
         numeros[0] = btn0;
         numeros[1] = btn1;
@@ -180,20 +180,22 @@ public class Calculadora extends JFrame {
                 	
                     JButton pulsado = (JButton) e.getSource();
                     String operador = pulsado.getText();
-
                     
-                    if (!operadorActual.isEmpty() && !nuevaEntrada) {
+                    if (operador != ",") {
+
+                    	if (!operadorActual.isEmpty() && !nuevaEntrada && operador != ",") {
                     	
-                        calcular();
-                        actualizarLabel();
+                    		calcular();
+                    		actualizarLabel();
                         
-                    } else {
+                    	} else {
                     	
-                    	numeroActual = Double.parseDouble(lblResultado.getText());
-                    }
+                    		numeroActual = Double.parseDouble(lblResultado.getText());
+                    	}
                                
-                    operadorActual = operador;
-                    nuevaEntrada = true;
+                    	operadorActual = operador;
+                    	nuevaEntrada = true;
+                    }
                 }
             });
         }
@@ -241,6 +243,52 @@ public class Calculadora extends JFrame {
                 actualizarLabel();
             }
         });
+        
+        btnPosNeg.addActionListener(new ActionListener() {
+        	
+            public void actionPerformed(ActionEvent e) {
+            	
+                if (!lblResultado.getText().equals("0")) {
+                	
+                    double numero = Double.parseDouble(lblResultado.getText());
+                    
+                    numero = -numero;
+                    
+                    lblResultado.setText(Double.toString(numero));
+                }
+            }
+        });
+        
+        btnComa.addActionListener(new ActionListener() {
+        	
+            public void actionPerformed(ActionEvent e) {
+            	
+                if (!lblResultado.getText().contains(".")) {
+                    lblResultado.setText(lblResultado.getText() + ".");
+                }
+            }
+        });
+        
+        btnDel.addActionListener(new ActionListener() {
+        	
+            public void actionPerformed(ActionEvent e) {
+            	
+                String actual = lblResultado.getText();
+                
+                if (actual.length() > 1) {
+                	
+                    actual = actual.substring(0, actual.length() - 1);
+                } else {
+
+                    actual = "0";
+                    nuevaEntrada = true;
+                }
+                lblResultado.setText(actual);
+            }
+        });
+
+
+
     }
     
     private void calcular() {
@@ -276,6 +324,6 @@ public class Calculadora extends JFrame {
     
     private void actualizarLabel() {
     	
-        lblResultado.setText(String.valueOf(resultado));
+        lblResultado.setText(resultado + "");
     }
 }
